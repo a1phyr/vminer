@@ -1,54 +1,54 @@
-use crate::{cstring, error};
+use crate::error;
 use alloc::boxed::Box;
-use core::ffi::{c_char, c_int};
+use core::ffi::{c_char, c_int, CStr};
 use vmc::SymbolsIndexer;
 
 #[derive(Default)]
 pub struct Symbols(pub SymbolsIndexer);
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn symbols_new() -> Box<Symbols> {
     Default::default()
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn symbols_load_from_bytes(
     indexer: &mut Symbols,
     name: *const c_char,
     data: *const u8,
     len: usize,
 ) -> c_int {
-    error::wrap_unit(|| {
+    error::wrap_unit(|| unsafe {
         let data = core::slice::from_raw_parts(data, len);
-        let name = cstring::from_ut8(name)?.into();
+        let name = CStr::from_ptr(name).to_str()?.into();
         indexer.0.load_from_bytes(name, data)?;
         Ok(())
     })
 }
 
 #[cfg(feature = "std")]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn symbols_load_from_file(
     indexer: &mut Symbols,
     path: *const c_char,
 ) -> c_int {
     error::wrap_unit(|| {
-        let path = cstring::from_ut8(path)?;
-        indexer.0.load_from_file(path)?;
+        let path = unsafe { CStr::from_ptr(path) };
+        indexer.0.load_from_file(path.to_str()?)?;
         Ok(())
     })
 }
 
 #[cfg(feature = "std")]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn symbols_load_dir(indexer: &mut Symbols, path: *const c_char) -> c_int {
     error::wrap_unit(|| {
-        let path = cstring::from_ut8(path)?;
-        indexer.0.load_dir(path)
+        let path = unsafe { CStr::from_ptr(path) };
+        indexer.0.load_dir(path.to_str()?)
     })
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn symbols_free(indexer: Option<Box<Symbols>>) {
     drop(indexer)
 }

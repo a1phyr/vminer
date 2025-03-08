@@ -1,7 +1,7 @@
 use crate::cstring;
 use core::{
     cell::Cell,
-    ffi::{c_char, c_int},
+    ffi::{c_char, c_int, CStr},
     fmt::{self, Write},
     mem,
 };
@@ -25,12 +25,12 @@ fn take_error() -> Option<VmError> {
 
 #[inline]
 unsafe fn error_ref(err: &*const Error) -> &VmError {
-    mem::transmute(err)
+    unsafe { mem::transmute(err) }
 }
 
 #[inline]
 unsafe fn error_from(err: *mut Error) -> VmError {
-    mem::transmute(err)
+    unsafe { mem::transmute(err) }
 }
 
 #[inline]
@@ -124,7 +124,7 @@ pub fn wrap_usize(f: impl FnOnce() -> VmResult<usize>) -> isize {
     }
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn take_last_error() -> *mut Error {
     match take_error() {
         Some(err) => error_into(err),
@@ -132,47 +132,53 @@ pub unsafe extern "C" fn take_last_error() -> *mut Error {
     }
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn print_last_error(str: *mut c_char, max_len: usize) -> usize {
-    let mut fmt = cstring::Formatter::new(str, max_len);
-    ERROR.with(|e| match e.take() {
-        Some(err) => {
-            let _ = fmt::write(&mut fmt, format_args!("{err:#}"));
-            e.set(Some(err));
-        }
-        None => {
-            let _ = fmt.write_str("success");
-        }
-    });
-    fmt.finish()
+    unsafe {
+        let mut fmt = cstring::Formatter::new(str, max_len);
+        ERROR.with(|e| match e.take() {
+            Some(err) => {
+                let _ = fmt::write(&mut fmt, format_args!("{err:#}"));
+                e.set(Some(err));
+            }
+            None => {
+                let _ = fmt.write_str("success");
+            }
+        });
+        fmt.finish()
+    }
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn error_with_message(err: *mut Error, context: *mut c_char) -> *mut Error {
-    let context = cstring::from_ut8_lossy(context);
-    let err = VmError::with_context(context, error_from(err));
+    let context = unsafe { CStr::from_ptr(context) };
+    let err = unsafe { error_from(err) };
+    let err = VmError::with_context(context.to_string_lossy(), err);
     error_into(err)
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn error_missing_symbol(sym: *mut c_char) -> *mut Error {
-    let err = VmError::missing_symbol(&cstring::from_ut8_lossy(sym));
+    let sym = unsafe { CStr::from_ptr(sym) };
+    let err = VmError::missing_symbol(&sym.to_string_lossy());
     error_into(err)
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn error_print(err: *const Error, str: *mut c_char, max_len: usize) -> usize {
-    let mut fmt = cstring::Formatter::new(str, max_len);
+    let mut fmt = unsafe { cstring::Formatter::new(str, max_len) };
     if err.is_null() {
         let _ = fmt.write_str("success");
     } else {
-        let err = error_ref(&err);
+        let err = unsafe { error_ref(&err) };
         let _ = fmt::write(&mut fmt, format_args!("{err:#}"));
     }
     fmt.finish()
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn error_free(err: *mut Error) {
-    drop(error_from(err));
+    unsafe {
+        drop(error_from(err));
+    }
 }

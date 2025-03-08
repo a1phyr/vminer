@@ -1,6 +1,6 @@
-use crate::{arch, cstring, error};
+use crate::{arch, error};
 use alloc::{boxed::Box, sync::Arc};
-use core::ffi::{c_char, c_void};
+use core::ffi::{c_char, c_void, CStr};
 
 #[repr(C)]
 pub struct MemoryMap {
@@ -213,13 +213,13 @@ impl vmc::Backend for X86_64Backend {
     }
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn backend_make(backend: X86_64Backend) -> Box<Backend> {
     Backend::new(backend)
 }
 
 #[cfg(all(target_os = "linux", feature = "std"))]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn kvm_connect(pid: i32) -> Option<Box<Backend>> {
     error::wrap_box(|| {
         let kvm = vminer::backends::kvm::Kvm::connect(pid)?;
@@ -228,16 +228,16 @@ pub extern "C" fn kvm_connect(pid: i32) -> Option<Box<Backend>> {
 }
 
 #[cfg(feature = "std")]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn read_dump(path: *const c_char) -> Option<Box<Backend>> {
     error::wrap_box(|| {
-        let path = cstring::from_ut8(path)?;
-        let dump = vminer::backends::kvm_dump::DumbDump::read(path)?;
+        let path = unsafe { CStr::from_ptr(path) };
+        let dump = vminer::backends::kvm_dump::DumbDump::read(path.to_str()?)?;
         Ok(Backend::new(dump))
     })
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn backend_free(backend: Option<Box<Backend>>) {
     drop(backend);
 }

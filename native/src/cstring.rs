@@ -1,34 +1,10 @@
-use alloc::{borrow::Cow, string::String};
 use core::{
     cmp,
     ffi::c_char,
     fmt,
     ptr::{self, NonNull},
-    slice, str,
+    str,
 };
-
-pub unsafe fn strlen(str: *const c_char) -> usize {
-    let mut len = 0;
-
-    while *str.add(len) != 0 {
-        len += 1;
-    }
-
-    len
-}
-
-pub unsafe fn from_ut8_lossy<'a>(str: *const c_char) -> Cow<'a, str> {
-    let len = strlen(str);
-    let bytes = slice::from_raw_parts(str.cast(), len);
-    String::from_utf8_lossy(bytes)
-}
-
-#[inline]
-pub unsafe fn from_ut8<'a>(str: *const c_char) -> Result<&'a str, str::Utf8Error> {
-    let len = strlen(str);
-    let bytes = slice::from_raw_parts(str.cast(), len);
-    str::from_utf8(bytes)
-}
 
 pub struct Formatter {
     ptr: Option<NonNull<c_char>>,
@@ -112,7 +88,7 @@ pub unsafe fn with_formatter(
     f: impl FnOnce(&mut Formatter) -> vmc::VmResult<()>,
 ) -> isize {
     crate::error::wrap_usize(|| {
-        let mut fmt = Formatter::new(ptr, len);
+        let mut fmt = unsafe { Formatter::new(ptr, len) };
         f(&mut fmt)?;
         Ok(fmt.finish())
     })

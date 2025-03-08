@@ -52,7 +52,7 @@ pub unsafe fn fill<T>(
     max_size: usize,
     f: impl FnOnce(&mut Array<T>) -> vmc::VmResult<()>,
 ) -> isize {
-    crate::error::wrap_usize(|| {
+    crate::error::wrap_usize(|| unsafe {
         let mut array = Array::new(ptr, max_size);
         f(&mut array)?;
         let n = array.cursor;

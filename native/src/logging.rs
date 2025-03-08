@@ -100,14 +100,15 @@ impl log::Log for Logger {
     }
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn set_logger(logger: *mut Logger) -> bool {
+    let logger = unsafe { &*logger };
     log::set_max_level(log::LevelFilter::Trace);
-    log::set_logger(&*logger).is_ok()
+    log::set_logger(logger).is_ok()
 }
 
 #[cfg(feature = "std")]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn set_default_logger() -> bool {
     env_logger::try_init().is_ok()
 }

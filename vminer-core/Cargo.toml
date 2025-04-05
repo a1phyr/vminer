@@ -27,7 +27,7 @@ object = { workspace = true, default-features = false, features = ["read_core", 
 gimli = { workspace = true, default-features = false, features = ["read"] }
 pdb = { workspace = true, optional = true }
 
-sync_file = { version = "0.2", optional = true }
+sync_file = { version = "0.3", optional = true }
 
 # TODO: Always enable these once they work with no_std
 cpp_demangle = { version = "0.4", default-features = false, features = ["alloc"] }

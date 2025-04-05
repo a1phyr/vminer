@@ -1,4 +1,4 @@
-use crate::{symbols::ModuleSymbolsBuilder, VmResult};
+use crate::{VmResult, symbols::ModuleSymbolsBuilder};
 use alloc::string::String;
 #[cfg(feature = "std")]
 use std::io;

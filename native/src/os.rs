@@ -1,5 +1,5 @@
 use crate::{
-    array, backend::Backend, cstring, error, symbols::Symbols, PhysicalAddress, VirtualAddress,
+    PhysicalAddress, VirtualAddress, array, backend::Backend, cstring, error, symbols::Symbols,
 };
 use alloc::boxed::Box;
 use core::{

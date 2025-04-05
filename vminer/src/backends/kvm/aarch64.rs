@@ -1,5 +1,5 @@
-pub use vmc::arch::aarch64::Vcpu;
 pub use vmc::arch::Aarch64 as Arch;
+pub use vmc::arch::aarch64::Vcpu;
 
 pub const INSTRUCTIONS: [u8; 8] = [
     0x00, 0x01, 0x3f, 0xd6, // blr x8

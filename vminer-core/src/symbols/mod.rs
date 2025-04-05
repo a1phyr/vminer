@@ -4,7 +4,7 @@ pub mod pdb;
 pub mod symbols_file;
 
 use super::VirtualAddress;
-use crate::{utils::OnceCell, ResultExt, VmError, VmResult};
+use crate::{ResultExt, VmError, VmResult, utils::OnceCell};
 use alloc::{
     borrow::{Cow, ToOwned},
     boxed::Box,
@@ -14,10 +14,10 @@ use alloc::{
 };
 use core::{fmt, ops::Range};
 use hashbrown::HashMap;
-#[cfg(not(feature = "std"))]
-use once_map::unsync::OnceMap;
 #[cfg(feature = "std")]
 use once_map::OnceMap;
+#[cfg(not(feature = "std"))]
+use once_map::unsync::OnceMap;
 #[cfg(feature = "std")]
 use std::{fs, path};
 

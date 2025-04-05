@@ -30,7 +30,7 @@ impl fmt::Display for DisplayDwAt {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.0.static_string() {
             Some(str) => f.write_str(str),
-            None => f.write_fmt(format_args!("0x{:x}", self.0 .0)),
+            None => f.write_fmt(format_args!("0x{:x}", self.0.0)),
         }
     }
 }

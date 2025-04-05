@@ -1,6 +1,6 @@
 use crate::{
-    arch, mem::MemoryMap, Architecture, Memory, MemoryAccessResult, PhysicalAddress,
-    TranslationResult, VirtualAddress, VmResult,
+    Architecture, Memory, MemoryAccessResult, PhysicalAddress, TranslationResult, VirtualAddress,
+    VmResult, arch, mem::MemoryMap,
 };
 
 pub fn default_read_virtual_memory<B: Backend + ?Sized>(

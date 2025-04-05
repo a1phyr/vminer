@@ -1,5 +1,5 @@
-pub use vmc::arch::x86_64::Vcpu;
 pub use vmc::arch::X86_64 as Arch;
+pub use vmc::arch::x86_64::Vcpu;
 
 pub const INSTRUCTIONS: [u8; 3] = [
     0xff, 0xd0, // call rax

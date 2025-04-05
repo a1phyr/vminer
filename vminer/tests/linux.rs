@@ -1,7 +1,7 @@
 use std::{fmt, ops::ControlFlow};
 
 use once_cell::sync::Lazy;
-use vmc::{arch::HasVcpus, Os, VirtualAddress, VmResult};
+use vmc::{Os, VirtualAddress, VmResult, arch::HasVcpus};
 use vminer::{backends::kvm_dump::DumbDump, os::Linux};
 
 #[derive(Clone, Copy)]

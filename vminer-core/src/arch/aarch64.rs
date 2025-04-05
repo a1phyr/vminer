@@ -1,7 +1,7 @@
 use bytemuck::{Pod, Zeroable};
 
 use super::runtime;
-use crate::{endian::LittleEndian, PhysicalAddress, VcpuResult, VirtualAddress};
+use crate::{PhysicalAddress, VcpuResult, VirtualAddress, endian::LittleEndian};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Aarch64;
@@ -124,11 +124,7 @@ impl super::Architecture for Aarch64 {
         let reg = (|| {
             Some(if let Some(n) = name.strip_prefix('x') {
                 let n: usize = n.parse().ok()?;
-                if n == 0 {
-                    0
-                } else {
-                    *regs.regs.get(n - 1)?
-                }
+                if n == 0 { 0 } else { *regs.regs.get(n - 1)? }
             } else {
                 match name {
                     "pc" => regs.pc,

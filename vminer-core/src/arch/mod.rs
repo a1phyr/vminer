@@ -8,8 +8,8 @@ pub mod x86_64;
 pub use x86_64::X86_64;
 
 use crate::{
-    addr::MmuEntry, mask, MemoryAccessResult, PhysicalAddress, TranslationResult, VcpuError,
-    VcpuResult, VirtualAddress,
+    MemoryAccessResult, PhysicalAddress, TranslationResult, VcpuError, VcpuResult, VirtualAddress,
+    addr::MmuEntry, mask,
 };
 
 fn try_all_addresses(test: impl Fn(PhysicalAddress) -> bool) -> Option<PhysicalAddress> {

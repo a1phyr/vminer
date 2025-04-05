@@ -1,6 +1,6 @@
 use crate::error;
 use alloc::boxed::Box;
-use core::ffi::{c_char, c_int, CStr};
+use core::ffi::{CStr, c_char, c_int};
 use vmc::SymbolsIndexer;
 
 #[derive(Default)]

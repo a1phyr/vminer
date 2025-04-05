@@ -336,7 +336,7 @@ pub fn iter<B: vmc::Backend>(
                 reg => return Err(unsupported_register(reg, "CFA")),
             },
             gimli::CfaRule::Expression(_) => {
-                return Err(VmError::new("unsupported DWARF expression"))
+                return Err(VmError::new("unsupported DWARF expression"));
             }
         };
 

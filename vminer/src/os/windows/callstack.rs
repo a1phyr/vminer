@@ -575,7 +575,7 @@ fn unwind_with_infos(
                     next_ip_addr: next_sp + offset,
                     next_bp_addr,
                     fun_start,
-                })
+                });
             }
             UnwindStep::SpOffset(offset) => next_sp += offset as u64,
         }

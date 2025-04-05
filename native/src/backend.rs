@@ -1,6 +1,6 @@
 use crate::{arch, error};
 use alloc::{boxed::Box, sync::Arc};
-use core::ffi::{c_char, c_void, CStr};
+use core::ffi::{CStr, c_char, c_void};
 
 #[repr(C)]
 pub struct MemoryMap {

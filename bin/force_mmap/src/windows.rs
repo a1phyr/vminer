@@ -1,6 +1,6 @@
 use windows::Win32::System::{
     Diagnostics::Debug::ReadProcessMemory,
-    Memory::{VirtualQueryEx, MEMORY_BASIC_INFORMATION, MEM_FREE, MEM_RESERVE, PAGE_NOACCESS},
+    Memory::{MEM_FREE, MEM_RESERVE, MEMORY_BASIC_INFORMATION, PAGE_NOACCESS, VirtualQueryEx},
     Threading::{OpenProcess, PROCESS_QUERY_INFORMATION, PROCESS_VM_READ},
 };
 

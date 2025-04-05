@@ -5,8 +5,8 @@ use std::{
     path::Path,
 };
 use vmc::{
-    arch::{self, aarch64, x86_64, HasVcpus},
     Architecture, Memory, PhysicalAddress, VmResult,
+    arch::{self, HasVcpus, aarch64, x86_64},
 };
 
 #[derive(Debug, Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]

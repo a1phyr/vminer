@@ -1,4 +1,4 @@
-use crate::{arch, endian::RuntimeEndian, Endianness, HasVcpus, PhysicalAddress, VirtualAddress};
+use crate::{Endianness, HasVcpus, PhysicalAddress, VirtualAddress, arch, endian::RuntimeEndian};
 
 #[derive(Debug, Clone, Copy)]
 pub enum Architecture {

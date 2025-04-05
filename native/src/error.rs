@@ -1,7 +1,7 @@
 use crate::cstring;
 use core::{
     cell::Cell,
-    ffi::{c_char, c_int, CStr},
+    ffi::{CStr, c_char, c_int},
     fmt::{self, Write},
     mem,
 };

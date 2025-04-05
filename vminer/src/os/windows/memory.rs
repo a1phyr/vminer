@@ -1,4 +1,4 @@
-use super::{pointer, profile, Pointer};
+use super::{Pointer, pointer, profile};
 use vmc::{Os, PhysicalAddress, VirtualAddress};
 
 const VAD_MASK: u64 = 0xffffffff00000000;

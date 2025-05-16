@@ -668,7 +668,8 @@ impl<B: vmc::Backend> vmc::Os for Windows<B> {
         proc: vmc::Process,
         f: &mut dyn FnMut(vmc::Vma) -> VmResult<ControlFlow<()>>,
     ) -> VmResult<()> {
-        self.vad_root(proc)?
+        let _ = self
+            .vad_root(proc)?
             .iterate_tree(&mut |mmvad| f(mmvad.into()))?;
         Ok(())
     }

@@ -303,7 +303,7 @@ pub fn iter<B: vmc::Backend>(
                 log::debug!("Cannot get FDE: {err:?}");
                 frame.start = None;
                 frame.size = None;
-                f(&frame)?;
+                let _ = f(&frame)?;
                 return Ok(());
             }
         };

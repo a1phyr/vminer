@@ -36,7 +36,9 @@ where
                 break;
             }
 
-            f(Pointer::new(pos.addr - offset, self.os, self.ctx))?;
+            if f(Pointer::new(pos.addr - offset, self.os, self.ctx))?.is_break() {
+                return Ok(());
+            }
         }
 
         Ok(())
@@ -477,7 +479,9 @@ impl<B: vmc::Backend> vmc::Os for Linux<B> {
         let mut cur_vma = mm.read_pointer_field(|mm| mm.mmap)?;
 
         while !cur_vma.is_null() {
-            f(cur_vma.into())?;
+            if f(cur_vma.into())?.is_break() {
+                return Ok(());
+            }
             cur_vma = cur_vma.read_pointer_field(|vma| vma.vm_next)?;
         }
 

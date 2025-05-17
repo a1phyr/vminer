@@ -61,8 +61,14 @@ impl super::Architecture for X86_64 {
         additional: &[VirtualAddress],
     ) -> crate::VmResult<Option<PhysicalAddress>> {
         // To check if a CR3 is valid, try to translate addresses with it
-        let lstar = VirtualAddress(vcpus.other_registers(crate::VcpuId(0))?.lstar);
-        let addresses = &[additional, &[lstar]];
+        let lstar: &[_] = match vcpus.other_registers(crate::VcpuId(0)) {
+            Ok(regs) => &[VirtualAddress(regs.lstar)],
+            Err(err) => {
+                log::warn!("Failed to get lstar value: {err}");
+                &[]
+            }
+        };
+        let addresses = &[additional, lstar];
         let test = super::make_address_test(vcpus, memory, use_per_cpu, addresses);
 
         // First, try cr3 registers
